@@ -1,0 +1,2558 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>19/11 • SODITEC PIXEL ARENA</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@500;600;700;800&family=Chakra+Petch:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    <style>
+      :root {
+        --bg-paper: #f6fbff;
+        --grid-line: rgba(56, 189, 248, 0.14);
+        --sky-blue: #38bdf8;
+        --sky-deep: #0284c7;
+        --sky-light: #e0f2fe;
+        --pink-pastel: #ff7eb6;
+        --pink-deep: #db2777;
+        --pink-light: #fce7f3;
+        --ink-dark: #172554;
+        --card-white: rgba(255, 255, 255, 0.96);
+        --font-pixel: "Chakra Petch", "Be Vietnam Pro", sans-serif;
+        --font-body: "Be Vietnam Pro", sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background-color: var(--bg-paper);
+        background-image:
+          linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+          linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px),
+          radial-gradient(
+            circle at 20% 15%,
+            rgba(255, 126, 182, 0.16),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 80% 15%,
+            rgba(56, 189, 248, 0.2),
+            transparent 45%
+          );
+        background-size:
+          22px 22px,
+          22px 22px,
+          100% 100%,
+          100% 100%;
+        color: var(--ink-dark);
+        min-height: 100vh;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        user-select: none;
+      }
+
+      /* ===== CẢNH QUAN PIXEL SÂN VẬN ĐỘNG XANH LAM & HỒNG PASTEL ===== */
+      .pixel-scenery {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        overflow: hidden;
+      }
+
+      .pixel-cloud {
+        position: absolute;
+        width: 72px;
+        height: 22px;
+        background: #ffffff;
+        box-shadow:
+          12px -10px 0 0 #ffffff,
+          30px -14px 0 0 #ffffff,
+          46px -8px 0 0 #ffffff,
+          0 4px 0 0 #bae6fd;
+        animation: cloudDrift 28s linear infinite;
+      }
+
+      .cloud-1 {
+        top: 10%;
+        left: -90px;
+        animation-duration: 34s;
+      }
+      .cloud-2 {
+        top: 18%;
+        left: -90px;
+        animation-duration: 42s;
+        animation-delay: -15s;
+        transform: scale(0.85);
+      }
+      .cloud-3 {
+        top: 7%;
+        left: -90px;
+        animation-duration: 30s;
+        animation-delay: -8s;
+        transform: scale(1.1);
+      }
+
+      @keyframes cloudDrift {
+        from {
+          transform: translateX(-100px);
+        }
+        to {
+          transform: translateX(calc(100vw + 140px));
+        }
+      }
+
+      .floating-badge-decor {
+        position: absolute;
+        font-size: 26px;
+        opacity: 0.75;
+        animation: decorFloat 3.6s ease-in-out infinite alternate;
+      }
+
+      @keyframes decorFloat {
+        from {
+          transform: translateY(0) rotate(-6deg);
+        }
+        to {
+          transform: translateY(-10px) rotate(6deg);
+        }
+      }
+
+      .pixel-horizon {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 24vh;
+        background: linear-gradient(
+          180deg,
+          #bae6fd 0%,
+          #7dd3fc 42%,
+          #38bdf8 100%
+        );
+        border-top: 4px solid var(--ink-dark);
+      }
+
+      .pixel-hill-left {
+        position: absolute;
+        bottom: 24vh;
+        left: 0;
+        width: 220px;
+        height: 28px;
+        background: var(--pink-pastel);
+        border-top: 4px solid var(--ink-dark);
+        border-right: 4px solid var(--ink-dark);
+        box-shadow:
+          -40px -20px 0 0 #f9a8d4,
+          -40px -24px 0 0 var(--ink-dark);
+      }
+
+      .pixel-hill-right {
+        position: absolute;
+        bottom: 24vh;
+        right: 0;
+        width: 240px;
+        height: 32px;
+        background: var(--pink-pastel);
+        border-top: 4px solid var(--ink-dark);
+        border-left: 4px solid var(--ink-dark);
+        box-shadow:
+          50px -22px 0 0 #f9a8d4,
+          50px -26px 0 0 var(--ink-dark);
+      }
+
+      .pitch-lines {
+        position: absolute;
+        inset: 14px 12% 0;
+        border-top: 4px dashed rgba(255, 255, 255, 0.8);
+        border-left: 4px solid rgba(255, 255, 255, 0.7);
+        border-right: 4px solid rgba(255, 255, 255, 0.7);
+      }
+
+      /* ===== THANH HUD PIXEL TRÊN CÙNG ===== */
+      .top-hud {
+        position: fixed;
+        top: 12px;
+        left: 14px;
+        right: 14px;
+        z-index: 30;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        pointer-events: none;
+      }
+
+      .hud-group {
+        display: flex;
+        gap: 8px;
+        pointer-events: auto;
+      }
+
+      .pixel-pill {
+        background: #ffffff;
+        border: 3px solid var(--ink-dark);
+        box-shadow: 3px 3px 0 var(--ink-dark);
+        padding: 6px 12px;
+        font-family: var(--font-pixel);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--ink-dark);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.1s ease;
+      }
+
+      .pixel-pill:active {
+        transform: translate(2px, 2px);
+        box-shadow: 1px 1px 0 var(--ink-dark);
+      }
+
+      .pill-pink {
+        background: var(--pink-light);
+      }
+      .pill-blue {
+        background: var(--sky-light);
+      }
+
+      /* ===== KHUNG SÂN KHẤU PIXEL TRUNG TÂM ===== */
+      .center-arena {
+        position: relative;
+        z-index: 15;
+        width: 92%;
+        max-width: 560px;
+        max-height: 88vh;
+        overflow-y: auto;
+        background: var(--card-white);
+        border: 4px solid var(--ink-dark);
+        box-shadow:
+          8px 8px 0 var(--ink-dark),
+          0 20px 50px rgba(2, 132, 199, 0.2);
+        padding: 18px 20px 22px;
+        text-align: center;
+        scrollbar-width: none;
+      }
+
+      .center-arena::-webkit-scrollbar {
+        display: none;
+      }
+
+      .window-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(90deg, var(--sky-blue), var(--pink-pastel));
+        border: 3px solid var(--ink-dark);
+        padding: 5px 10px;
+        margin-bottom: 14px;
+        font-family: var(--font-pixel);
+        font-size: 13px;
+        font-weight: 700;
+        color: #ffffff;
+        text-shadow: 1.5px 1.5px 0 var(--ink-dark);
+      }
+
+      .window-dots {
+        display: flex;
+        gap: 5px;
+      }
+
+      .window-dot {
+        width: 10px;
+        height: 10px;
+        border: 2px solid var(--ink-dark);
+        background: #ffffff;
+      }
+
+      /* ===== LINH VẬT BÉ SÂU HỒNG PIXEL THỂ THAO ===== */
+      .mascot-row {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .pink-worm-sprite {
+        width: 76px;
+        height: 54px;
+        flex-shrink: 0;
+        animation: wormBounce 1.4s steps(2, end) infinite;
+        filter: drop-shadow(3px 3px 0 rgba(23, 37, 84, 0.2));
+      }
+
+      @keyframes wormBounce {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-4px);
+        }
+      }
+
+      .speech-bubble-pixel {
+        position: relative;
+        background: #ffffff;
+        border: 3px solid var(--ink-dark);
+        box-shadow: 3px 3px 0 var(--pink-pastel);
+        padding: 6px 12px;
+        font-family: var(--font-pixel);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--pink-deep);
+        text-align: left;
+      }
+
+      .arena-title {
+        font-family: var(--font-pixel);
+        font-size: clamp(21px, 4.4vw, 29px);
+        font-weight: 700;
+        text-transform: uppercase;
+        color: var(--ink-dark);
+        text-shadow: 2px 2px 0 var(--sky-light);
+        margin-bottom: 6px;
+        line-height: 1.25;
+      }
+
+      .arena-sub {
+        font-size: 13.5px;
+        color: #334155;
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+
+      /* ===== BẢNG XẾP HÌNH PIXEL (TỰ ĐỘNG KHỚP TỶ LỆ ẢNH GỐC) ===== */
+      .puzzle-frame {
+        position: relative;
+        width: 100%;
+        max-width: 410px;
+        max-height: 44vh;
+        aspect-ratio: 4 / 3;
+        margin: 0 auto 14px;
+        border: 4px solid var(--ink-dark);
+        box-shadow: 5px 5px 0 var(--pink-pastel);
+        background: var(--sky-light);
+      }
+
+      .puzzle-grid {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 2px;
+        background: var(--ink-dark);
+      }
+
+      .puzzle-grid.solved {
+        gap: 0;
+      }
+
+      .tile {
+        width: 100%;
+        height: 100%;
+        background-repeat: no-repeat;
+        background-size: 300% 300%;
+        cursor: grab;
+        position: relative;
+        transition: transform 0.14s ease;
+      }
+
+      .tile.correct-slot::after {
+        content: "✓";
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        background: var(--sky-blue);
+        color: #fff;
+        border: 2px solid var(--ink-dark);
+        font-family: var(--font-pixel);
+        font-size: 11px;
+        font-weight: 700;
+        padding: 0 4px;
+      }
+
+      .puzzle-grid.solved .tile::after {
+        display: none;
+      }
+
+      .tile.selected {
+        outline: 4px solid var(--pink-pastel);
+        outline-offset: -4px;
+        transform: scale(0.94);
+        z-index: 3;
+      }
+
+      .preview-overlay {
+        position: absolute;
+        inset: 0;
+        background-size: cover;
+        background-position: center;
+        display: none;
+        z-index: 6;
+      }
+
+      .preview-overlay.show {
+        display: block;
+      }
+
+      .img-warning-note {
+        font-size: 12px;
+        color: #b91c1c;
+        background: #fef2f2;
+        border: 2px solid var(--ink-dark);
+        padding: 6px 10px;
+        margin-bottom: 12px;
+        line-height: 1.4;
+      }
+
+      /* ===== NÚT BẤM PIXEL ===== */
+      .btn-row {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .btn {
+        border: 3px solid var(--ink-dark);
+        box-shadow: 4px 4px 0 var(--ink-dark);
+        padding: 9px 15px;
+        font-family: var(--font-pixel);
+        font-size: 13.5px;
+        font-weight: 700;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition:
+          transform 0.1s ease,
+          box-shadow 0.1s ease,
+          background 0.15s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        color: var(--ink-dark);
+      }
+
+      .btn:active {
+        transform: translate(3px, 3px);
+        box-shadow: 1px 1px 0 var(--ink-dark);
+      }
+
+      .btn-blue {
+        background: var(--sky-blue);
+        color: #ffffff;
+        text-shadow: 1px 1px 0 var(--ink-dark);
+      }
+      .btn-blue:hover {
+        background: #0ea5e9;
+      }
+
+      .btn-pink {
+        background: var(--pink-pastel);
+        color: #ffffff;
+        text-shadow: 1px 1px 0 var(--ink-dark);
+      }
+      .btn-pink:hover {
+        background: #f472b6;
+      }
+
+      .btn-white {
+        background: #ffffff;
+        color: var(--ink-dark);
+      }
+      .btn-white:hover {
+        background: var(--sky-light);
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      /* ===== 2 LỰA CHỌN SAU KHI XẾP XONG ===== */
+      .choice-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 14px;
+      }
+
+      .pixel-choice {
+        background: #ffffff;
+        border: 3px solid var(--ink-dark);
+        box-shadow: 5px 5px 0 var(--sky-blue);
+        padding: 18px 12px;
+        cursor: pointer;
+        transition: transform 0.15s ease;
+      }
+
+      .pixel-choice:nth-child(2) {
+        box-shadow: 5px 5px 0 var(--pink-pastel);
+      }
+      .pixel-choice:hover {
+        transform: translate(-2px, -2px);
+      }
+
+      .choice-icon {
+        font-size: 34px;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .choice-title {
+        font-family: var(--font-pixel);
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--ink-dark);
+        margin-bottom: 5px;
+      }
+
+      .choice-desc {
+        font-size: 12.5px;
+        color: #475569;
+        line-height: 1.45;
+      }
+
+      /* ===== TRÌNH PHÁT VIDEO PIXEL ===== */
+      .video-pixel-box {
+        border: 4px solid var(--ink-dark);
+        box-shadow: 5px 5px 0 var(--sky-blue);
+        background: #000;
+        margin-bottom: 14px;
+      }
+
+      .video-pixel-box video,
+      .video-pixel-box iframe {
+        width: 100%;
+        aspect-ratio: 16 / 9;
+        display: block;
+        border: none;
+      }
+
+      /* ===== NHẬP MAIL TRƯỚC KÍ TỰ @ ===== */
+      .prefix-box {
+        display: flex;
+        align-items: stretch;
+        background: #ffffff;
+        border: 3px solid var(--ink-dark);
+        box-shadow: 4px 4px 0 var(--sky-blue);
+        margin-bottom: 12px;
+      }
+
+      .prefix-box input {
+        flex: 1;
+        min-width: 0;
+        padding: 12px;
+        border: none;
+        background: transparent;
+        color: var(--ink-dark);
+        font-family: var(--font-pixel);
+        font-size: 15px;
+        font-weight: 700;
+        outline: none;
+      }
+
+      .prefix-domain {
+        display: flex;
+        align-items: center;
+        padding: 0 12px;
+        background: var(--pink-light);
+        border-left: 3px solid var(--ink-dark);
+        color: var(--pink-deep);
+        font-family: var(--font-pixel);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .error-banner {
+        margin-top: 10px;
+        padding: 8px 12px;
+        background: #fee2e2;
+        border: 3px solid var(--ink-dark);
+        color: #991b1b;
+        font-size: 12.5px;
+        font-weight: 600;
+      }
+
+      /* ===== GÓI THẺ PIXEL (KÉO NGANG ĐỂ XÉ) ===== */
+      .pack-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 4px 0;
+      }
+
+      .pixel-pack {
+        position: relative;
+        width: 250px;
+        height: 325px;
+        background: linear-gradient(
+          135deg,
+          var(--sky-light) 0%,
+          #ffffff 48%,
+          var(--pink-light) 100%
+        );
+        border: 4px solid var(--ink-dark);
+        box-shadow: 7px 7px 0 var(--ink-dark);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+        animation: packBob 2s steps(2, end) infinite;
+      }
+
+      @keyframes packBob {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-5px);
+        }
+      }
+
+      .pack-crimp {
+        height: 16px;
+        background: repeating-linear-gradient(
+          90deg,
+          var(--sky-blue) 0px,
+          var(--sky-blue) 8px,
+          var(--pink-pastel) 8px,
+          var(--pink-pastel) 16px
+        );
+        border-bottom: 3px solid var(--ink-dark);
+      }
+
+      .pack-crimp.bottom {
+        border-bottom: none;
+        border-top: 3px solid var(--ink-dark);
+      }
+
+      .tear-zone {
+        position: relative;
+        height: 52px;
+        background: #fef9c3;
+        border-bottom: 3px dashed var(--ink-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: ew-resize;
+        touch-action: none;
+        overflow: hidden;
+      }
+
+      .tear-fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0%;
+        background: linear-gradient(90deg, var(--sky-blue), var(--pink-pastel));
+        pointer-events: none;
+      }
+
+      .tear-label {
+        position: relative;
+        z-index: 2;
+        font-family: var(--font-pixel);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ink-dark);
+        background: rgba(255, 255, 255, 0.9);
+        padding: 3px 7px;
+        border: 2px solid var(--ink-dark);
+        pointer-events: none;
+      }
+
+      .pack-body {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 14px;
+      }
+
+      .pack-badge {
+        background: var(--pink-pastel);
+        color: #ffffff;
+        border: 2px solid var(--ink-dark);
+        font-family: var(--font-pixel);
+        font-size: 12px;
+        font-weight: 700;
+        padding: 3px 8px;
+        margin-bottom: 10px;
+        text-shadow: 1px 1px 0 var(--ink-dark);
+      }
+
+      .pack-recipient {
+        font-family: var(--font-pixel);
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--ink-dark);
+        text-transform: uppercase;
+        margin-top: 8px;
+      }
+
+      .pack-burst {
+        animation: burstPixel 0.45s steps(4, end) forwards !important;
+      }
+
+      @keyframes burstPixel {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.12);
+          filter: brightness(1.4);
+        }
+        100% {
+          transform: scale(1.25);
+          opacity: 0;
+        }
+      }
+
+      /* ===== BỘ THẺ LỜI NHẮN VUỐT LẦN LƯỢT ===== */
+      .cards-deck-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .deck-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 10px;
+      }
+
+      .dot-step {
+        width: 13px;
+        height: 13px;
+        border: 2px solid var(--ink-dark);
+        background: #ffffff;
+        cursor: pointer;
+      }
+
+      .dot-step.active {
+        background: var(--pink-pastel);
+        transform: scale(1.15);
+      }
+
+      .swipe-stage {
+        position: relative;
+        width: 100%;
+        max-width: 360px;
+        height: 390px;
+        margin: 0 auto 12px;
+        touch-action: pan-y;
+      }
+
+      .stack-shadow-1,
+      .stack-shadow-2 {
+        position: absolute;
+        inset: 0;
+        border: 4px solid var(--ink-dark);
+        pointer-events: none;
+      }
+
+      .stack-shadow-1 {
+        background: var(--pink-light);
+        transform: translate(8px, 8px);
+        z-index: 1;
+      }
+      .stack-shadow-2 {
+        background: var(--sky-light);
+        transform: translate(15px, 15px);
+        z-index: 0;
+      }
+
+      .active-card-shell {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        z-index: 3;
+        transition:
+          transform 0.22s ease,
+          opacity 0.22s ease;
+      }
+
+      .pixel-message-card {
+        width: 100%;
+        height: 100%;
+        border: 4px solid var(--ink-dark);
+        box-shadow: 5px 5px 0 var(--ink-dark);
+        background: linear-gradient(
+          180deg,
+          var(--sky-light) 0%,
+          #ffffff 45%,
+          var(--pink-light) 100%
+        );
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 14px;
+      }
+
+      .card-top-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: var(--font-pixel);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .card-num-tag {
+        background: var(--sky-blue);
+        color: #ffffff;
+        border: 2px solid var(--ink-dark);
+        padding: 2px 8px;
+        text-shadow: 1px 1px 0 var(--ink-dark);
+      }
+
+      .card-sport-tag {
+        background: var(--pink-pastel);
+        color: #ffffff;
+        border: 2px solid var(--ink-dark);
+        padding: 2px 8px;
+        text-shadow: 1px 1px 0 var(--ink-dark);
+      }
+
+      .card-message-box {
+        flex: 1;
+        margin: 10px 0;
+        background: #ffffff;
+        border: 3px solid var(--ink-dark);
+        padding: 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: left;
+        overflow-y: auto;
+      }
+
+      .card-msg-content {
+        font-size: 13.8px;
+        line-height: 1.65;
+        color: var(--ink-dark);
+        white-space: pre-line;
+        user-select: text;
+      }
+
+      .card-author-sign {
+        margin-top: 12px;
+        padding-top: 8px;
+        border-top: 2px dashed #cbd5e1;
+        text-align: right;
+        font-family: var(--font-pixel);
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--pink-deep);
+      }
+
+      .card-bottom-hint {
+        font-family: var(--font-pixel);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--sky-deep);
+      }
+
+      @media (max-width: 640px) {
+        .center-arena {
+          padding: 14px 12px;
+        }
+        .choice-grid {
+          grid-template-columns: 1fr;
+        }
+        .swipe-stage {
+          height: 375px;
+          max-width: 310px;
+        }
+        .pixel-pill {
+          font-size: 12px;
+          padding: 5px 9px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pixel-scenery">
+      <div class="pixel-cloud cloud-1"></div>
+      <div class="pixel-cloud cloud-2"></div>
+      <div class="pixel-cloud cloud-3"></div>
+      <div class="floating-badge-decor" style="top: 16%; left: 10%">⚽</div>
+      <div
+        class="floating-badge-decor"
+        style="top: 22%; right: 11%; animation-delay: 0.8s"
+      >
+        🏆
+      </div>
+      <div
+        class="floating-badge-decor"
+        style="bottom: 30%; left: 8%; animation-delay: 1.4s"
+      >
+        🏅
+      </div>
+      <div
+        class="floating-badge-decor"
+        style="bottom: 32%; right: 9%; animation-delay: 0.4s"
+      >
+        ⚡
+      </div>
+      <div class="pixel-hill-left"></div>
+      <div class="pixel-hill-right"></div>
+      <div class="pixel-horizon">
+        <div class="pitch-lines"></div>
+      </div>
+    </div>
+
+    <header class="top-hud">
+      <div class="hud-group">
+        <button
+          class="pixel-pill pill-pink"
+          onclick="backToPuzzleGame()"
+          title="Quay lại trò chơi xếp hình"
+        >
+          ↺ Xếp hình
+        </button>
+      </div>
+      <div class="hud-group">
+        <button class="pixel-pill pill-blue" onclick="toggleMusic()">
+          <span id="musicIcon">🔇</span>
+          <span id="musicLabel">Nhạc</span>
+        </button>
+      </div>
+    </header>
+    <audio id="bgMusic" loop preload="auto"></audio>
+
+    <main class="center-arena">
+      <div class="window-bar">
+        <span>★ SODITEC MEN'S DAY 19/11 • SODITEC ARENA</span>
+        <div class="window-dots">
+          <span class="window-dot" style="background: #ff7eb6"></span>
+          <span class="window-dot" style="background: #38bdf8"></span>
+          <span class="window-dot" style="background: #facc15"></span>
+        </div>
+      </div>
+
+      <div class="mascot-row">
+        <svg
+          class="pink-worm-sprite"
+          viewBox="0 0 22 16"
+          shape-rendering="crispEdges"
+        >
+          <rect x="1" y="9" width="3" height="4" fill="#172554" />
+          <rect x="2" y="10" width="2" height="2" fill="#f472b6" />
+          <rect x="3" y="7" width="4" height="6" fill="#172554" />
+          <rect x="4" y="8" width="2" height="4" fill="#ff7eb6" />
+          <rect x="6" y="8" width="4" height="6" fill="#172554" />
+          <rect x="7" y="9" width="2" height="4" fill="#f472b6" />
+          <rect x="9" y="7" width="4" height="6" fill="#172554" />
+          <rect x="10" y="8" width="2" height="4" fill="#ff7eb6" />
+          <rect x="12" y="3" width="8" height="9" fill="#172554" />
+          <rect x="13" y="4" width="6" height="7" fill="#ff7eb6" />
+          <rect x="12" y="4" width="8" height="2" fill="#0284c7" />
+          <rect x="13" y="4" width="6" height="1" fill="#38bdf8" />
+          <rect x="14" y="7" width="2" height="2" fill="#172554" />
+          <rect x="14" y="7" width="1" height="1" fill="#ffffff" />
+          <rect x="17" y="7" width="2" height="2" fill="#172554" />
+          <rect x="17" y="7" width="1" height="1" fill="#ffffff" />
+          <rect x="13" y="9" width="1" height="1" fill="#db2777" />
+          <rect x="18" y="9" width="1" height="1" fill="#db2777" />
+        </svg>
+        <div class="speech-bubble-pixel" id="mascotBubble">
+          Chào các tuyển thủ SoDiTEC! Ghép ảnh để nhận quà 19/11 nhé!
+        </div>
+      </div>
+
+      <h1 class="arena-title" id="arenaTitle">MẢNH GHÉP ĐỘI HÌNH 19/11</h1>
+
+      <section id="stepPuzzle">
+        <div id="imgWarning" class="img-warning-note hidden"></div>
+        <div class="puzzle-frame" id="puzzleFrame">
+          <div class="puzzle-grid" id="puzzleGrid"></div>
+          <div class="preview-overlay" id="previewOverlay"></div>
+        </div>
+        <div class="btn-row">
+          <button
+            class="btn btn-white"
+            onmousedown="peekOriginal(true)"
+            onmouseup="peekOriginal(false)"
+            onmouseleave="peekOriginal(false)"
+            ontouchstart="peekOriginal(true)"
+            ontouchend="peekOriginal(false)"
+          >
+            👁️ Ảnh gốc
+          </button>
+          <button class="btn btn-blue" onclick="shufflePuzzle()">
+            🔀 Xáo trộn
+          </button>
+        </div>
+      </section>
+
+      <section id="stepChoices" class="hidden">
+        <div class="choice-grid">
+          <div class="pixel-choice" onclick="showVideoView()">
+            <span class="choice-icon">🎬</span>
+            <div class="choice-title">Xem Video Chúc Mừng</div>
+          </div>
+          <div class="pixel-choice" onclick="showVerifyView()">
+            <span class="choice-icon">💌</span>
+            <div class="choice-title">Mở Gói Thẻ Lời Nhắn</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-white" onclick="backToPuzzleGame()">
+            ↺ Quay về xếp hình
+          </button>
+        </div>
+      </section>
+
+      <section id="stepVideo" class="hidden">
+        <div class="video-pixel-box" id="videoMount"></div>
+        <div class="btn-row">
+          <button class="btn btn-blue" onclick="returnToChoices()">
+            ← Chọn mục khác
+          </button>
+          <button class="btn btn-white" onclick="backToPuzzleGame()">
+            ↺ Chơi lại xếp hình
+          </button>
+        </div>
+      </section>
+
+      <section id="stepVerify" class="hidden">
+        <div class="prefix-box">
+          <input
+            type="text"
+            id="prefixInput"
+            placeholder="Ví dụ: maihoa23 hoặc hoa.lm2516995"
+            autocomplete="off"
+            onkeydown="if (event.key === 'Enter') verifyRecipient();"
+          />
+          <span class="prefix-domain">@...</span>
+        </div>
+        <button
+          class="btn btn-pink"
+          style="width: 100%; margin-bottom: 10px"
+          onclick="verifyRecipient()"
+        >
+          ⚡ NHẬN GÓI THẺ CỦA BẠN
+        </button>
+        <div id="verifyError" class="error-banner hidden"></div>
+        <div class="btn-row" style="margin-top: 10px">
+          <button class="btn btn-white" onclick="returnToChoices()">
+            ← Quay lại
+          </button>
+          <button class="btn btn-white" onclick="backToPuzzleGame()">
+            ↺ Xếp hình
+          </button>
+        </div>
+      </section>
+
+      <section id="stepPackAndCard" class="hidden">
+        <div id="packWrapper" class="pack-stage">
+          <div class="pixel-pack" id="pixelPack">
+            <div class="pack-crimp"></div>
+            <div class="tear-zone" id="tearZone">
+              <div class="tear-fill" id="tearFill"></div>
+              <span class="tear-label">✂️ KÉO NGANG ĐỂ XÉ TÚI ➔</span>
+            </div>
+            <div class="pack-body">
+              <span class="pack-badge" id="packCardCountBadge"
+                >GÓI LỜI NHẮN • 19/11</span
+              >
+              <div style="font-size: 46px">🏆</div>
+              <div class="pack-recipient" id="packRecipientName">
+                PLAYER NAME
+              </div>
+            </div>
+            <div class="pack-crimp bottom"></div>
+          </div>
+          <p style="font-size: 12px; color: #475569; margin-top: 10px">
+            Vuốt hoặc kéo ngang qua đường kẻ đứt nét để mở!
+          </p>
+        </div>
+
+        <div id="cardsDeckWrapper" class="cards-deck-wrapper hidden">
+          <div class="deck-indicator" id="deckIndicator"></div>
+
+          <div class="swipe-stage" id="swipeStage">
+            <div class="stack-shadow-2" id="stackShadow2"></div>
+            <div class="stack-shadow-1" id="stackShadow1"></div>
+
+            <div class="active-card-shell" id="activeCardShell">
+              <div class="pixel-message-card">
+                <div class="card-top-meta">
+                  <span class="card-num-tag" id="cardCountTag">THẺ 1 / 2</span>
+                  <span class="card-sport-tag">SODITEC 19/11</span>
+                </div>
+                <div class="card-message-box">
+                  <div class="card-msg-content" id="cardMessageText"></div>
+                  <div class="card-author-sign" id="cardAuthorSign"></div>
+                </div>
+                <div class="card-bottom-hint" id="cardSwipeHint">
+                  ◀ Vuốt ngang / bấm nút để xem thẻ tiếp theo ▶
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button
+              class="btn btn-white"
+              id="prevCardBtn"
+              onclick="changeCard(-1)"
+            >
+              ◀ Thẻ trước
+            </button>
+            <button
+              class="btn btn-blue"
+              id="nextCardBtn"
+              onclick="changeCard(1)"
+            >
+              Thẻ tiếp ▶
+            </button>
+          </div>
+
+          <div class="btn-row" style="margin-top: 10px">
+            <button class="btn btn-pink" onclick="resetToVerify()">
+              ✉️ Quay lại
+            </button>
+            <button class="btn btn-white" onclick="backToPuzzleGame()">
+              ↺ Xếp hình
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const CONFIG = {
+        GROUP_PHOTO: "./assets/group.jpg",
+        BG_MUSIC: "./assets/music.mp3",
+
+        VIDEO: {
+          type: "mp4",
+          src: "./assets/video.mov",
+        },
+
+        LETTERS: [
+          {
+            emailPrefix: "minh.dt2615772",
+            name: "Đinh Tuấn Minh",
+            cards: [
+              {
+                text: "Chúc bạn một năm thật nhiều sức khỏe, công việc suôn sẻ, code chạy mượt và không gặp bug nào khó nhằn 😄 Cảm ơn bạn vì luôn là người nhiệt tình và dễ mến. Mong tụi mình sẽ có thêm nhiều dịp trò chuyện và thân hơn nữa nhé",
+                author: "",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "nvanhltv",
+            name: "Nguyễn Việt Anh",
+            cards: [
+              {
+                text: "Chúc bạn ngày 19/11 thật vui nha! Chúc bạn luôn cười thật tươi, ăn ngon ngủ ngon và gặp toàn chuyện dễ thương",
+                author: "",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "minhtn.edu",
+            name: "Trịnh Nhật Minh",
+            cards: [
+              {
+                text: "Nhật ánh vầng dương rọi sáng ngời,\nMinh tâm, tuệ tính rạng muôn nơi.\nMười chín tháng Mười, vui phơi phới,\nTình thân gắn kết, trọn đời tươi!             \nNhân dịp 19/11, mình chúc Nhật Minh luôn tỏa sáng như ánh mặt trời, cuộc sống ngập tràn niềm vui, may mắn và gặt hái mọi ước mơ, hoài bão.",
+                author: "",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "huyphamquang05082007",
+            name: "Phạm Quang Huy",
+            cards: [
+              {
+                text: "Chúc cậu luôn có đủ 100% năng lượng để cân đẹp mọi task từ học trên trường đến chạy sự kiện CLB nhé! Mong đường code của cậu luôn mượt mà, còn cuối ngày mà hơi đuối sức thì cứ ới một câu, tớ sẽ rút cho một trải bài Tarot để healing nha! :>",
+                author: "8",
+              },
+              {
+                text: "Chúc cậu 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của cậu sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "jyabindz99",
+            name: "Nguyễn Gia Bình",
+            cards: [
+              {
+                text: "Happy Men's Day! Chúc bạn luôn đẹp trai, phong độ, tiền vào như nước, deadline tự né và mọi chuyện đều thuận buồm xuôi gió, có thêm thật nhiều niềm vui trong cuộc sống và trong học tập nha",
+                author: "",
+              },
+              {
+                text: "Chúc em tuổi mới thật nhiều niềm vui, luôn giữ được sự tò mò, nhiệt huyết và tinh thần dám thử những điều mới. Mong em sẽ có một hành trình thật đáng nhớ tại CLB!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "controltrongson",
+            name: "Đào Trọng Sơn",
+            cards: [
+              {
+                text: "Chúc bạn luôn giữ được sự nhiệt huyết, chân thành và những năng lượng tích cực của mình. Mong bạn sẽ luôn có đủ dũng khí để theo đuổi điều mình muốn, đủ bình yên để tận hưởng những gì đang có và luôn được yêu thương, trân trọng.",
+                author: "",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "quangminhdienbien08",
+            name: "Nguyễn Quang Minh",
+            cards: [
+              {
+                text: "Chúc bạn 19/11 thật nhiều niềm vui, luôn đẹp trai, tự tin và tràn đầy năng lượng tích cực. Mong rằng mọi điều bạn mong muốn đều sớm trở thành hiện thực, công việc thuận lợi, học tập suôn sẻ và mỗi ngày đều có thật nhiều chuyện vui để kể. Đặc biệt, chúc bạn luôn gặp may mắn và được mọi người yêu quý nhé!",
+                author: "",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "pmson1008",
+            name: "Phạm Minh Sơn",
+            cards: [
+              {
+                text: "Mong bạn sẽ luôn giữ được sự nhiệt thành, lòng tốt và nụ cười trên môi; gặp được những người chân thành, làm được những điều mình yêu thích và có thật nhiều khoảnh khắc đáng nhớ trên hành trình phía trước. Chúc bạn luôn hạnh phúc và tỏa sáng theo cách riêng của mình!",
+                author: "",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "titpipo123",
+            name: "Phạm Hải Đăng",
+            cards: [
+              {
+                text: "Chúc cậu luôn vui vẻ, mạnh khỏe, gặp nhiều may mắn và mọi chuyện đều thuận lợi nhé!",
+                author: "",
+              },
+              {
+                text: "Chúc em có một ngày 19/11 thật vui vẻ và đáng nhớ! Mong rằng trong hành trình sắp tới, em sẽ luôn giữ được sự nhiệt huyết, tò mò và tinh thần dám thử sức với những điều mới mẻ. Có thể sẽ có những lúc bỡ ngỡ, những task khó nhằn hay những lần chưa biết phải bắt đầu từ đâu, nhưng hy vọng em sẽ luôn đủ tự tin để bước tiếp, đủ kiên trì để học hỏi và đủ vui vẻ để tận hưởng từng khoảnh khắc ở CLB. Cứ thoải mái khám phá và trưởng thành theo cách của riêng mình nhé!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "leanhtaistudy",
+            name: "Lê Anh Tài",
+            cards: [
+              {
+                text: "tài giỏi tài xỉu tài năng tài lộc quá lớn.....! nhiều tài quá ae ơi, ce tui chính là rất thích những người nhiều tài\nchúc Tài tiếp tục tài ơi là tài trong cả công việc và cuộc sống, mãi vui thật vui bên gia đình Sodi nhen",
+                author: "hihi",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "dominhh1207",
+            name: "Đỗ Tiến Minh",
+            cards: [
+              {
+                text: "Chúc cậu ngày càng thành công, luôn tự tin và đạt được những điều mà cậu mong muốn nha!",
+                author: "",
+              },
+              {
+                text: "Chúc cậu 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của cậu sẽ đều thành hiện thực!!",
+                author: "your cờ láts mết",
+              },
+            ],
+          },
+          {
+            emailPrefix: "nguyenhonggiangnam",
+            name: "Nguyễn Hồng Giang Nam",
+            cards: [
+              {
+                text: "Chúc cậu luôn vui vẻ, ăn ngon ngủ kỹ, tiền vào như nước và không gặp chuyện gì phiền lòng nhé!",
+                author: "",
+              },
+              {
+                text: "Chúc em luôn giữ được nguồn năng lượng tích cực và sự nhiệt thành của một người mới bắt đầu. Đừng ngại thử sức, đừng sợ mắc lỗi và cũng đừng quá áp lực khi thấy mình chưa giỏi bằng ai đó. Mỗi người đều có một hành trình phát triển riêng, quan trọng là em vẫn đang tiến về phía trước. Mong rằng một ngày không xa, em sẽ nhìn lại và tự hào vì những gì mình đã làm được trong quãng thời gian ở CLB!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "mchu50920",
+            name: "Nguyễn Đức Tuấn Minh",
+            cards: [
+              {
+                text: "Chúc cậu lúc nào cũng vui, gặp nhiều chuyện tốt và ít phải đau đầu vì deadline",
+                author: "",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "namhuykrnl",
+            name: "Vũ Nam Huy",
+            cards: [
+              {
+                text: "Chúc cậu luôn thuận buồm xuôi gió, thích gì được nấy, muốn gì cũng sớm thành hiện thực nha!",
+                author: "",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "dang5gtd",
+            name: "Nguyễn Hải Đăng",
+            cards: [
+              {
+                text: "Em giỏi lắm. Chị chúc em mãi giữ vững ngọn lửa và thành công với đam mê của mình OvO",
+                author: "apricot blossom",
+              },
+              {
+                text: "Chúc em tuổi mới thật nhiều niềm vui, luôn giữ được sự tò mò, nhiệt huyết và tinh thần dám thử những điều mới. Mong em sẽ có một hành trình thật đáng nhớ tại CLB!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "anhngoctieubieu",
+            name: "Lê Anh Ngọc",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc em có một ngày 19/11 thật vui vẻ và đáng nhớ! Mong rằng trong hành trình sắp tới, em sẽ luôn giữ được sự nhiệt huyết, tò mò và tinh thần dám thử sức với những điều mới mẻ. Có thể sẽ có những lúc bỡ ngỡ, những task khó nhằn hay những lần chưa biết phải bắt đầu từ đâu, nhưng hy vọng em sẽ luôn đủ tự tin để bước tiếp, đủ kiên trì để học hỏi và đủ vui vẻ để tận hưởng từng khoảnh khắc ở CLB. Cứ thoải mái khám phá và trưởng thành theo cách của riêng mình nhé!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "tientranviet200",
+            name: "Trần Việt Tiến",
+            cards: [
+              {
+                text: "Chúc cậu một ngày 19/11 thật xịn sò và dồi dào năng lượng nhé! Mong cậu luôn tràn ngập idea, nảy số liên tục để xây dựng những bộ tài liệu số và project nhé!",
+                author: "8",
+              },
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "tomtrinh2007",
+            name: "Trịnh Đức Minh",
+            cards: [
+              {
+                text: "Chúc cậu 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của cậu sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "duonghuyhoang810",
+            name: "Dương Huy Hoàng",
+            cards: [
+              {
+                text: "Em giỏi lắm đó! Chị chúc và tin em sẽ ngày càng bùng nổ trên hành trình sắp tới >v<",
+                author: "apricot blossom",
+              },
+              {
+                text: "Happy Men's Day! Chúc em luôn mạnh mẽ, tự tin, bản lĩnh trên con đường học tập cũng như trong cuộc sống, và đặc biệt là lúc nào cũng giữ nụ cười tỏa nắng như mỗi lần gặp chị nha.\nCảm ơn em vì suốt 364 ngày qua đã luôn quan tâm, che chở cho phái nữ nói chung và chị em nhà Sâu nói riêng. Mong ngày hôm nay sẽ là một kỷ niệm thật đáng nhớ với em, và dù bận rộn thế nào cũng nhớ yêu thương bản thân thật nhiều nhé!\nP/s: Chị mong chờ những bàn thắng của em trong đợt giao lưu giữa các CLB sắp tới đó nha, cố lên chàng trai <3",
+                author: "Chíp",
+              },
+            ],
+          },
+          {
+            emailPrefix: "nguyenducvietanh23",
+            name: "Nguyễn Đức Việt Anh",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc em ngày càng trưởng thành, tự tin và khám phá được thật nhiều điều thú vị trong những năm tháng sinh viên. Mong rằng CLB sẽ không chỉ là nơi em học thêm những kiến thức mới mà còn là nơi em tìm được những người bạn tốt, những người anh em sẵn sàng đồng hành và những kỷ niệm mà sau này nghĩ lại vẫn thấy thật vui. Hy vọng em sẽ có một khởi đầu thật đẹp và viết nên câu chuyện thật đáng nhớ của riêng mình tại đây!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "giaphu2k6",
+            name: "Hoàng Mạc Gia Phú",
+            cards: [
+              {
+                text: "Happy Men’s Day! \nChúc Gia Phú ngày càng đẹp trai, phong độ, cân đẹp mọi deadline và lúc nào cũng giữ được nụ cười tươi trên môi nhé. Mong mọi dự định của cậu đều suôn sẻ và ngay cả những ngày bình thường nhất cũng luôn ngập tràn niềm vui. \nCảm ơn cậu vì suốt 364 ngày qua đã luôn quan tâm, che chở cho phái nữ nói chung và chị em nhà Sâu nói riêng. Mong ngày hôm nay sẽ là một kỉ niệm đáng nhớ với cậu và dù bận rộn thế nào cũng nhớ yêu thương bản thân thật nhiều nhé!\nP/s: Mong cta sẽ có cơ hội nói chuyện với nhau nha ^^",
+                author: "Chíp",
+              },
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "sonlvt122008ngau",
+            name: "Trần Đình Sơn",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "huyhoang17012008",
+            name: "Nguyễn Huy Hoàng",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc em ngày càng trưởng thành, tự tin và khám phá được thật nhiều điều thú vị trong những năm tháng sinh viên. Mong rằng CLB sẽ không chỉ là nơi em học thêm những kiến thức mới mà còn là nơi em tìm được những người bạn tốt, những người anh em sẵn sàng đồng hành và những kỷ niệm mà sau này nghĩ lại vẫn thấy thật vui. Hy vọng em sẽ có một khởi đầu thật đẹp và viết nên câu chuyện thật đáng nhớ của riêng mình tại đây!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "solarlunarx217",
+            name: "Nguyễn Đức Minh",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "andatph",
+            name: "Phạm An Đạt",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "thaibavietan",
+            name: "Thái Bá VIệt An",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc em luôn giữ được nguồn năng lượng tích cực và sự nhiệt thành của một người mới bắt đầu. Đừng ngại thử sức, đừng sợ mắc lỗi và cũng đừng quá áp lực khi thấy mình chưa giỏi bằng ai đó. Mỗi người đều có một hành trình phát triển riêng, quan trọng là em vẫn đang tiến về phía trước. Mong rằng một ngày không xa, em sẽ nhìn lại và tự hào vì những gì mình đã làm được trong quãng thời gian ở CLB!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "nguyentridai2007",
+            name: "Nguyễn Trí Đại",
+            cards: [
+              {
+                text: "Happy Men's Day 19/11 nha! Chúc cậu luôn vui vẻ, full 100% năng lượng và chạy mọi deadline trên trường lẫn CLB thật mượt mà nhé.",
+                author: "8",
+              },
+              {
+                text: "Chúc cậu 19/11 thiệt vui vẻ OwO Tin rằng mọi mong muốn tốt đẹp của cậu sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "nguyenletrung482008",
+            name: "Nguyễn Lê Trung",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc em ngày càng trưởng thành, tự tin và khám phá được thật nhiều điều thú vị trong những năm tháng sinh viên. Mong rằng CLB sẽ không chỉ là nơi em học thêm những kiến thức mới mà còn là nơi em tìm được những người bạn tốt, những người anh em sẵn sàng đồng hành và những kỷ niệm mà sau này nghĩ lại vẫn thấy thật vui. Hy vọng em sẽ có một khởi đầu thật đẹp và viết nên câu chuyện thật đáng nhớ của riêng mình tại đây!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "anhtuanng04050405",
+            name: "Nguyễn Anh Tuấn",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "nqdendou27082008",
+            name: "Ngô Quang Đại",
+            cards: [
+              {
+                text: "Mừng ngày Đàn ong 2026, đại diện chị em nhà Sâu chúc Đại đại chiến đại thắng (ủa!?) với đống bài vở trên trường, và luôn đại gia tình cảm để đồng hành và quậy hết mình cùng clb nhéee",
+                author: "hihi",
+              },
+              {
+                text: "Chúc em luôn giữ được nguồn năng lượng tích cực và sự nhiệt thành của một người mới bắt đầu. Đừng ngại thử sức, đừng sợ mắc lỗi và cũng đừng quá áp lực khi thấy mình chưa giỏi bằng ai đó. Mỗi người đều có một hành trình phát triển riêng, quan trọng là em vẫn đang tiến về phía trước. Mong rằng một ngày không xa, em sẽ nhìn lại và tự hào vì những gì mình đã làm được trong quãng thời gian ở CLB!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "08mduc",
+            name: "Nguyễn Minh Đức",
+            cards: [
+              {
+                text: "Chúc em 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của em sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Happy Men's Dayyy! Chúc em 19/11 thật vui vẻ . Ngày càng đẹp trai, học gì hiểu đó, làm gì cũng thuận lợi và cơ hội thì cứ tự động tìm đến =))).",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "hung.nguyenan",
+            name: "Nguyễn An Hưng",
+            cards: [
+              {
+                text: 'Nhân ngày Quốc tế Nam giới 19/11, phái nữ SoDiTEC xin gửi lời chúc mừng chân thành nhất tới anh chủ nhiệm - "thuyền trưởng" độc nhất vô nhị của chúng em. Cảm ơn anh vì đã luôn là người thầy tận tâm, người anh định hướng và là chỗ dựa vững chắc cho mọi hoạt động của CLB. Chúc anh luôn mạnh khỏe, hạnh phúc và gặt hái nhiều thành công rực rỡ trên giảng đường cũng như trong cuộc sống!',
+                author: "Đại diện phái nữ SoDiTEC",
+              },
+            ],
+          },
+          {
+            emailPrefix: "quan.nguyenminh1",
+            name: "Nguyễn Minh Quân",
+            cards: [
+              {
+                text: "Happy Men's Day anh Quânnn! Chúc anh ngày càng thành công, có thêm thật nhiều bài báo chất lượng, nghiên cứu nào cũng thuận lợi và đặc biệt là có thật nhiều chuyến đi thú vị trong thời gian tới ạ =))) Mong anh sẽ được đặt chân đến thật nhiều vùng đất mới, gặp gỡ những con người thú vị và có thêm cả một album ảnh thật xịn để khoe mọi người. Chúc anh lúc nào cũng tràn đầy năng lượng, vừa có sự nghiệp rực rỡ vừa có một chiếc bản đồ du lịch ngày càng được tô kín nhéee!",
+                author: "dthg s1 tg",
+              },
+              {
+                text: '"Yêu thương đâu có ở xa.\nMà trong tim nhỏ bên Sâu tháng ngày."\n Cảm ơn anh Quân vì những ngày tháng gắn bó với chúng em. Chúc người anh GVN siêu cấp xịn sò của SoDiTEC 19/11 thật vui vẻ ạ, tin rằng ở nơi đâu anh cũng sẽ tỏa sáng bằng cách riêng của mình!',
+                author: "apricot blossom",
+              },
+            ],
+          },
+          {
+            emailPrefix: "tung.nguyenduy",
+            name: "Nguyễn Duy Tùng",
+            cards: [
+              {
+                text: "Happy Men's Day anh Tùnggg! Chúc anh luôn vui vẻ, phong độ, đẹp trai và giữ vững danh hiệu cây hài kiêm chuyên gia tư vấn của CLB =))) Cảm ơn anh vì lúc nào cũng mang đến tiếng cười và những lời khuyên rất có tâm cho tụi em. Mong anh sẽ luôn giữ được sự hài hước, thoải mái và nguồn năng lượng tích cực ấy. Chúc anh làm gì cũng thuận lợi, gặp nhiều điều may mắn và tiếp tục phát huy khả năng truyền cảm hứng cho các em út nhé ạ. À, nhớ chia sẻ thêm nhiều lời khuyên hay ho nữa nha anh!",
+                author: "dthg s1 tg",
+              },
+              {
+                text: '"Bên sâu chua ngọt đã từng\nGừng cay, muối mặn, xin đừng quên nhau."\nCảm ơn anh Tùng đã trở thành tạo nên những kỉ niệm SÂU đậm cho SoDiTEC. Nhân ngày lành tháng tốt 19/11, sắp tới là 20/10, em xin chúc người thầy, cũng là người anh lớn của CLB có thật nhiều hạnh phúc và thành công trong công việc và cuộc sống ạ :3',
+                author: "người em đồng hương",
+              },
+            ],
+          },
+          {
+            emailPrefix: "tuan.phammanh",
+            name: "Phạm Mạnh Tuấn",
+            cards: [
+              {
+                text: 'Happy Men\'s Day anh Tuấn - GVN siêu cấp xịn sò của SoDiTEC! Cảm ơn anh vì dù bận rộn vẫn luôn là "bệ phóng" vững chắc và là nguồn cảm hứng cho tụi em. Chúc anh luôn trẻ trung, nhiệt huyết và thành công rực rỡ trên mọi mặt trận (khắp thế giới)!',
+                author: "",
+              },
+              {
+                text: "Happy Men's Day anh Tuấnnn! Chúc anh luôn thật nhiều sức khỏe, niềm vui và gặp thật nhiều may mắn trong cuộc sống ạ. Em thật sự rất respect tinh thần của anh, dù nhà xa nhưng anh vẫn luôn cố gắng sắp xếp thời gian để tham gia và đồng hành cùng mọi người. Điều đó thực sự rất đáng quý ạ! Mong anh sẽ luôn giữ được sự nhiệt tình ấy, công việc và mọi dự định đều thuận lợi. Chúc anh sớm có thật nhiều dịp gặp gỡ, đồng hành và tạo thêm nhiều kỷ niệm đẹp cùng tụi em nhéee!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "huy.phamquang",
+            name: "Phạm Quang Huy",
+            cards: [
+              {
+                text: 'Happy Men\'s Day anh Huy - GVN siêu cấp xịn sò của SoDiTEC! Cảm ơn anh vì dù bận rộn vẫn luôn là "bệ phóng" vững chắc và là nguồn cảm hứng cho tụi em. Chúc anh luôn trẻ trung, nhiệt huyết và thành công rực rỡ trên mọi mặt trận (đặc biệt là với Toán học) !',
+                author: "",
+              },
+              {
+                text: "Happy Men's Day anh Huyyy! Chúc anh luôn vui vẻ, khỏe mạnh, học tập và công việc đều thuận lợi ạ. Chúc tình yêu với Toán học của anh sẽ luôn bền vững, gặp bài khó thì tìm được lời giải, gặp bài hóc búa thì vẫn bình tĩnh như chưa có chuyện gì xảy ra =))) Mong anh sẽ luôn giữ được sự nhiệt huyết, đam mê của mình và đạt được thật nhiều thành tựu trong thời gian tới. Chúc anh có một ngày 19/11 thật vui và nhận được nhiều điều dễ thương nhé!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "hung.manh.nguyen.jan1106",
+            name: "Nguyễn Mạnh Hùng",
+            cards: [
+              {
+                text: "Anh lun làm mọi người phải ồ wao, thời gian qua anh đã giúp bọn em học được rất nhiều, em siêu siêu cảm ơn anh! Chúc anh Hùng mãi ngầu ạ.",
+                author: "đệ tử",
+              },
+              {
+                text: "Chúc anh có một ngày 19/11 thật nhiều niềm vui và luôn giữ được sự nhiệt huyết trên hành trình phía trước. Một năm có thể không quá dài, nhưng chắc hẳn cũng đủ để có thật nhiều câu chuyện, trải nghiệm và kỷ niệm đáng nhớ. Cảm ơn anh vì đã dành thời gian, công sức và cả sự tận tâm để đồng hành cùng CLB. Mong rằng dù sau này mỗi người sẽ có một hướng đi riêng, anh vẫn sẽ luôn nhớ về khoảng thời gian này với thật nhiều niềm vui và sự tự hào nhé!",
+                author: "dthg s1 tg",
+              },
+              {
+                text: "Em quạt anh\nChúc anh 8386",
+                author: "Người em bị mắng 2 lần",
+              },
+            ],
+          },
+          {
+            emailPrefix: "vulailam",
+            name: "Lại Lâm Vũ",
+            cards: [
+              {
+                text: "Chúc anh Vũ 19/11 thiệt vui vẻ ạ. Thời gian qua anh đã giúp bọn em học được rất nhiều điều, em rất rất cảm ơn anh ạ!!!",
+                author: "",
+              },
+              {
+                text: '"Bên sâu chua ngọt đã từng\nGừng cay, muối mặn, xin đừng quên nhau."\n Cảm ơn anh vì những đóng góp siêu siêu ý nghĩa tới hoạt động của CLB cũng như tới việc học tập của mọi người. Anh Vũ giống như người anh trai cả luôn làm các em cảm thấy thoải mái và an tâm mỗi khi ở cạnh zậy! Chắc chắn anh Vũ sẽ thành mảnh kí ức SÂU đậm trong lòng mỗi thành viên SoDiTEC :3',
+                author: "fan hâm mộ",
+              },
+            ],
+          },
+          {
+            emailPrefix: "ntminhcsp",
+            name: "Nguyễn Tuấn Minh",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc anh trên chặng đường sắp tới sẽ gặp thật nhiều may mắn, có thêm nhiều cơ hội để phát triển và luôn đạt được những điều mình mong muốn. Mong anh sẽ luôn giữ được sự tự tin, bản lĩnh và tinh thần dám nghĩ dám làm của mình. Cảm ơn anh vì đã trở thành một phần trong hành trình của CLB, vì những đóng góp có thể lớn lao hoặc đôi khi chỉ là những điều nhỏ bé nhưng đều rất đáng trân trọng. Chúc anh thật thành công và hy vọng chúng ta sẽ còn nhiều dịp gặp lại nhau!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "ngphihoang06",
+            name: "Nguyễn Phi Hoàng",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc anh trên chặng đường sắp tới sẽ gặp thật nhiều may mắn, có thêm nhiều cơ hội để phát triển và luôn đạt được những điều mình mong muốn. Mong anh sẽ luôn giữ được sự tự tin, bản lĩnh và tinh thần dám nghĩ dám làm của mình. Cảm ơn anh vì đã trở thành một phần trong hành trình của CLB, vì những đóng góp có thể lớn lao hoặc đôi khi chỉ là những điều nhỏ bé nhưng đều rất đáng trân trọng. Chúc anh thật thành công và hy vọng chúng ta sẽ còn nhiều dịp gặp lại nhau!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "baophong23102006",
+            name: "Nguyễn Bảo Phong",
+            cards: [
+              {
+                text: "Chúc cậu một ngày siêu năng suất, chạy deadline mượt mà và không bao giờ dính bug nhé! Mong mọi dự định sắp tới của cậu đều pass êm ru, điểm số lúc nào cũng rực rỡ. Đặc biệt là luôn giữ được năng lượng tích cực nha! :>",
+                author: "8",
+              },
+              {
+                text: "Happy Men’s Day!\nChúc Phong ngày càng đẹp trai, phong độ, cân đẹp mọi deadline và lúc nào cũng giữ được nụ cười tươi trên môi nhé. Mong mọi dự định của cậu đều suôn sẻ, và chúc cầu thủ chủ lực của tụi mình luôn cháy hết mình với đam mê sân cỏ, giữ vững phong độ đỉnh cao trong giải giao lưu giữa các CLB sắp tới và quan trọng nhất là thi đấu an toàn, tuyệt đối không bị chấn thương nha.\nCảm ơn cậu vì suốt 364 ngày qua đã luôn quan tâm, che chở cho phái nữ nói chung và chị em nhà Sâu nói riêng. Không biết hôm nay cậu có đến tham gia không, nhưng mong ngày hôm nay sẽ là một kỷ niệm thật đáng nhớ với cậu và dù bận rộn thế nào cũng nhớ yêu thương bản thân thật nhiều nhé!\nP/s: Mong tụi mình sẽ có cơ hội nói chuyện với nhau nha ^^",
+                author: "Chíp",
+              },
+            ],
+          },
+          {
+            emailPrefix: "nguyencongduociot2124",
+            name: "Nguyễn Công Được",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc anh trên chặng đường sắp tới sẽ gặp thật nhiều may mắn, có thêm nhiều cơ hội để phát triển và luôn đạt được những điều mình mong muốn. Mong anh sẽ luôn giữ được sự tự tin, bản lĩnh và tinh thần dám nghĩ dám làm của mình. Cảm ơn anh vì đã trở thành một phần trong hành trình của CLB, vì những đóng góp có thể lớn lao hoặc đôi khi chỉ là những điều nhỏ bé nhưng đều rất đáng trân trọng. Chúc anh thật thành công và hy vọng chúng ta sẽ còn nhiều dịp gặp lại nhau!",
+                author: "dthg s1 tg",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "tduongdo1808",
+            name: "Đỗ Thái Dương",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc anh trên chặng đường sắp tới sẽ gặp thật nhiều may mắn, có thêm nhiều cơ hội để phát triển và luôn đạt được những điều mình mong muốn. Mong anh sẽ luôn giữ được sự tự tin, bản lĩnh và tinh thần dám nghĩ dám làm của mình. Cảm ơn anh vì đã trở thành một phần trong hành trình của CLB, vì những đóng góp có thể lớn lao hoặc đôi khi chỉ là những điều nhỏ bé nhưng đều rất đáng trân trọng. Chúc anh thật thành công và hy vọng chúng ta sẽ còn nhiều dịp gặp lại nhau!",
+                author: "dthg s1 tg",
+              },
+              {
+                text: "Happy Men’s Day bạn Dương nhé! \nCảm ơn bạn vì lúc nào cũng nhiệt tình, chu đáo và mang lại cảm giác ấm áp, dễ chịu cho mọi người xung quanh - cái này tôi nhận ra ngay từ lần đầu bạn chủ động đến bắt chuyện với tôi luôn ấy. Không biết hôm nay bạn có tham gia không, nhưng vẫn chúc chàng trai Sư Tử ngày càng đẹp trai, phong độ, mọi dự định đều suôn sẻ và lúc nào cũng giữ được năng lượng tích cực nhé. Sắp tới đá bóng giao lưu cùng CLB, chúc bạn cháy hết mình trên sân nhưng quan trọng nhất vẫn là giữ an toàn, tuyệt đối không bị chấn thương nào nhaaaaa.\nVì biết bạn là người sống rất tình cảm, luôn để ý đến cảm xúc của người khác nên đôi khi hay tự làm mình mệt mỏi vì suy nghĩ nhiều. Nhân ngày hôm nay tôi chỉ muốn nhắn nhủ thêm một điều là hãy bớt bận lòng về ánh nhìn hay đánh giá của mọi người xung quanh, đừng tự tạo áp lực cho bản thân mà cứ thoải mái làm những gì bạn thấy vui và xứng đáng nhé. Bạn vốn dĩ đã rất tốt và đáng quý rồi!\nP/s: Hy vọng thời gian tới tôi với bạn sẽ có nhiều dịp trò chuyện hơn. Bất cứ lúc nào muốn chia sẻ hay đơn giản là tìm người nói chuyện phiếm thì cứ nhắn cho tôi nha, tôi luôn sẵn lòng!",
+                author: "Chíp",
+              },
+            ],
+          },
+          {
+            emailPrefix: "vu09051111",
+            name: "Nguyễn Huy Vũ",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "2901nguyendinhduong",
+            name: "Nguyễn Đình Dương",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: '"Bên sâu chua ngọt đã từng\nGừng cay, muối mặn, xin đừng quên nhau."\nCảm ơn anh Dương vì những cống hiến cho clb. 19/11 thật vui vẻ anh nha!',
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "binhminh4102005",
+            name: "Nguyễn Bình Minh",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: '"Bên sâu chua ngọt đã từng\nGừng cay, muối mặn, xin đừng quên nhau."\nCảm ơn anh Minh vì những cống hiến cho clb. 19/11 thật vui vẻ anh nha!',
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "barca.pgk",
+            name: "Phạm Gia Khánh",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc anh trên chặng đường sắp tới sẽ gặp thật nhiều may mắn, có thêm nhiều cơ hội để phát triển và luôn đạt được những điều mình mong muốn. Mong anh sẽ luôn giữ được sự tự tin, bản lĩnh và tinh thần dám nghĩ dám làm của mình. Cảm ơn anh vì đã trở thành một phần trong hành trình của CLB, vì những đóng góp có thể lớn lao hoặc đôi khi chỉ là những điều nhỏ bé nhưng đều rất đáng trân trọng. Chúc anh thật thành công và hy vọng chúng ta sẽ còn nhiều dịp gặp lại nhau!",
+                author: "dthg s1 tg",
+              },
+              {
+                text: 'Chào chàng trai tháng 11, tháng này nhiều quà quá ha vừa sinh nhật vừa dồn dập sự kiện luôn! Nhân ngày của phái mạnh, chúc Khánh ngày càng đẹp trai, phong độ, đá bóng thật cháy nhưng tuyệt đối không được để chấn thương đấy nhá. Chúc mọi dự án của m đều hanh thông và những dự định mà hai đứa mình từng chia sẻ với nhau cũng sẽ từng bước thành hiện thực, chậm mà chắc nhé.\nCảm ơn m vì suốt thời gian qua đã luôn nhẫn nhịn và chiều theo cái tính cứng đầu, ngang ngược, lì lợm của t. Đôi lúc t tự thấy mình oái oăm mà m vẫn chịu được thì t cũng nể mày thật sự. M có cái ưu điểm đọc vị được cảm xúc của t nhưng nó cũng vô tình thành nhược điểm của m vì m toàn bị chi phối bởi tâm trạng của t thôi nên là hạn chế "đọc" t lại nhé. Hôm nọ lúc m trêu không đến là t cũng hơi dỗi nhẹ đó nhưng suy đi tính lại thì hôm nay là ngày của m cơ mà, nên là thôi ha dù nay không đến thì t cx sẽ ko để bụng lắm đâu (t nghĩ thế -.-)\nMong thời gian tới m sẽ quan tâm mọi người xung quanh nhiều hơn, chủ động trong mọi việc hơn và đừng để bị tao "sấy" nữa nhé (cơ mà nhiều lúc t nghi m cố tình chọc cho t sấy thì m mới yên tâm ý nhỉ!). Chắc đọc từ mấy dòng đầu m cũng đoán ra t là ai rồi đúng không hehee? Lời nhắn cuối t dành cho m là nhớ giữ gìn sức khỏe của mình, ngủ sớm đi nha, mặc dù t cũng thức khuya nhưng làm ơn đừng lặp lại quả call 7 tiếng đến 6h sáng rồi vác xác đi học như hôm nọ nữa, t buồn ngủ lắm áaaaaaaa! \nChúc m 19/11 thật vui nhé ^^',
+                author: "Chíp",
+              },
+            ],
+          },
+          {
+            emailPrefix: "ducanh12physics",
+            name: "Nguyễn Hữu Đức Anh",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc anh ngày 19/11 thật vui vẻ, công việc thuận lợi, học tập suôn sẻ và mọi dự định đều diễn ra như mong đợi. Một năm qua chắc hẳn đã có không ít những câu chuyện, những lần chạy deadline hay những khoảnh khắc đáng nhớ cùng CLB. Mong rằng những trải nghiệm ấy sẽ luôn là một phần thật đẹp trong quãng đời sinh viên của anh. Chúc anh dù ở bất cứ hành trình nào cũng luôn vững vàng, tự tin và gặp được thật nhiều điều tốt đẹp!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "bach.ng2416130",
+            name: "Nguyễn Gia Bách",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "tu.da2416382",
+            name: "Đào Anh Tú (Tú Tây)",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc anh ngày 19/11 thật vui vẻ, công việc thuận lợi, học tập suôn sẻ và mọi dự định đều diễn ra như mong đợi. Một năm qua chắc hẳn đã có không ít những câu chuyện, những lần chạy deadline hay những khoảnh khắc đáng nhớ cùng CLB. Mong rằng những trải nghiệm ấy sẽ luôn là một phần thật đẹp trong quãng đời sinh viên của anh. Chúc anh dù ở bất cứ hành trình nào cũng luôn vững vàng, tự tin và gặp được thật nhiều điều tốt đẹp!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "thanh4a1nv",
+            name: "Nguyễn Công Thành",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc anh ngày 19/11 thật vui vẻ, công việc thuận lợi, học tập suôn sẻ và mọi dự định đều diễn ra như mong đợi. Một năm qua chắc hẳn đã có không ít những câu chuyện, những lần chạy deadline hay những khoảnh khắc đáng nhớ cùng CLB. Mong rằng những trải nghiệm ấy sẽ luôn là một phần thật đẹp trong quãng đời sinh viên của anh. Chúc anh dù ở bất cứ hành trình nào cũng luôn vững vàng, tự tin và gặp được thật nhiều điều tốt đẹp!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "ndlong2006",
+            name: "Nguyễn Duy Long",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "vanhle4884",
+            name: "Lê Việt Anh",
+            cards: [
+              {
+                text: "Happy Men’s Day! \nChúc Việt Anh ngày càng đẹp trai, phong độ, cân đẹp mọi deadline và lúc nào cũng giữ được nụ cười tươi trên môi nhé. Mong mọi dự định của cậu đều suôn sẻ và ngay cả những ngày bình thường nhất cũng luôn ngập tràn niềm vui. \nCảm ơn cậu vì suốt 364 ngày qua đã luôn quan tâm, che chở cho phái nữ nói chung và chị em nhà Sâu nói riêng. Mong ngày hôm nay sẽ là một kỉ niệm đáng nhớ với cậu và dù bận rộn thế nào cũng nhớ yêu thương bản thân thật nhiều nhé!\nP/s: Mong cta sẽ có cơ hội nói chuyện với nhau nha ^^",
+                author: "Chíp",
+              },
+              {
+                text: "Chúc bạn ngày càng phát triển, không chỉ trong học tập, chuyên môn mà còn trong cách nhìn nhận và đối mặt với những thử thách. Mong rằng dù có những lúc công việc bận rộn hay mọi thứ không diễn ra như mong đợi, bạn vẫn luôn tìm thấy niềm vui trong những điều mình đang làm. Cảm ơn bạn vì đã đồng hành cùng CLB trong suốt một năm qua. Hy vọng năm tiếp theo chúng ta sẽ không chỉ làm việc ăn ý hơn mà còn có thêm thật nhiều kỷ niệm đẹp cùng nhau!",
+                author: "",
+              },
+              {
+                text: '"Bên sâu chua ngọt đã từng\nGừng cay, muối mặn, xin đừng quên nhau."\nCảm ơn Việt Anh đã ở lại và cống hiến cho clb. Biết ơn cậu nhìu!!',
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "trihieu11ns",
+            name: "Trịnh Minh Trí",
+            cards: [
+              {
+                text: "Minh mẫn, tinh anh, sáng tựa gương,\nTrí dũng song toàn, rạng muôn phương.\nMười chín tháng Mười Một, hoa khoe sắc,\nVạn sự hanh thông, vạn dặm đường!   \nNhân dịp 19/11, mình chúc Minh Trí lúc nào cũng thông minh, sắc sảo và gặt hái thật nhiều thành công rực rỡ trên con đường đã chọn. Chúc ông ngày nào cũng vui vẻ, bớt phải thức khuya chạy deadline và luôn gặp toàn những điều may mắn, tử tế thôi nha!",
+                author: "",
+              },
+              {
+                text: "Chúc cậu 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của cậu sẽ đều thành hiện thực!!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "haduyenhaianh2007",
+            name: "Hà Duyên Hải Anh",
+            cards: [
+              {
+                text: "Chúc cậu 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của cậu sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc bạn luôn vui vẻ, gặp nhiều may mắn và có thật nhiều thành công trên hành trình của mình. Mình mong rằng một năm tiếp theo ở CLB sẽ là cơ hội để bạn thử sức với những vai trò mới, khám phá thêm những khả năng mà có thể chính bạn cũng chưa nhận ra. Hy vọng chúng ta sẽ tiếp tục cùng nhau trải qua những ngày thật bận rộn nhưng cũng thật vui, cùng tạo ra những sản phẩm thật chất lượng và có thêm nhiều câu chuyện để sau này nhìn lại vẫn thấy: May mà năm ấy chúng ta đã đồng hành cùng nhau!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "2k6anthai",
+            name: "Nguyễn Thái An",
+            cards: [
+              {
+                text: 'Chúc mừng anh 19/11. \n"Chúc" trong "Chúc mừng", "mừng" trong "Chúc mừng" <3',
+                author: "t",
+              },
+              {
+                text: "Chúc bạn luôn vui vẻ, gặp nhiều may mắn và có thật nhiều thành công trên hành trình của mình. Mình mong rằng một năm tiếp theo ở CLB sẽ là cơ hội để bạn thử sức với những vai trò mới, khám phá thêm những khả năng mà có thể chính bạn cũng chưa nhận ra. Hy vọng chúng ta sẽ tiếp tục cùng nhau trải qua những ngày thật bận rộn nhưng cũng thật vui, cùng tạo ra những sản phẩm thật chất lượng và có thêm nhiều câu chuyện để sau này nhìn lại vẫn thấy: May mà năm ấy chúng ta đã đồng hành cùng nhau!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "trongdangbn",
+            name: "Nguyễn Trọng Đăng",
+            cards: [
+              {
+                text: "Chúc anh 19/11 thiệt vui vẻ ạ. Tin rằng mọi mong muốn tốt đẹp của anh sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Gói ghém lo âu, cất vào ngăn,\nVui vẻ hôm nay, chẳng ngại ngần.\nThành viên nhà Sâu 19/11 vui vẻ nhé hehee!",
+                author: "",
+              },
+            ],
+          },
+          {
+            emailPrefix: "banngloc",
+            name: "Nguyễn Xuân Lộc",
+            cards: [
+              {
+                text: "Xuân sang hoa nở ngập đất trời,\nLộc biếc đơm chồi, lộc ngát tươi.\nMười chín tháng Mười Một, vui phơi phới,\nTài lộc vây quanh, rộn rã cười!                \nNhân dịp 19/11, chúc Xuân Lộc lúc nào cái tên cũng ứng nghiệm với đời nghĩa là lộc lá đầy nhà, tiền tài rủng rỉnh và may mắn cứ liên tiếp gõ cửa nhé! Mong ông bạn luôn giữ được năng lượng tích cực, tươi tắn như mùa xuân và làm gì cũng gặt hái được những trái ngọt thật xứng đáng nha!",
+                author: "",
+              },
+              {
+                text: "Chúc bạn ngày càng phát triển, không chỉ trong học tập, chuyên môn mà còn trong cách nhìn nhận và đối mặt với những thử thách. Mong rằng dù có những lúc công việc bận rộn hay mọi thứ không diễn ra như mong đợi, bạn vẫn luôn tìm thấy niềm vui trong những điều mình đang làm. Cảm ơn bạn vì đã đồng hành cùng CLB trong suốt một năm qua. Hy vọng năm tiếp theo chúng ta sẽ không chỉ làm việc ăn ý hơn mà còn có thêm thật nhiều kỷ niệm đẹp cùng nhau!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "khanh2772007",
+            name: "Phùng Duy Khánh",
+            cards: [
+              {
+                text: "Chúc cậu 19/11 thiệt vui vẻ. Tin rằng mọi mong muốn tốt đẹp của cậu sẽ đều thành hiện thực!!",
+                author: "",
+              },
+              {
+                text: "Chúc bạn luôn vui vẻ, gặp nhiều may mắn và có thật nhiều thành công trên hành trình của mình. Mình mong rằng một năm tiếp theo ở CLB sẽ là cơ hội để bạn thử sức với những vai trò mới, khám phá thêm những khả năng mà có thể chính bạn cũng chưa nhận ra. Hy vọng chúng ta sẽ tiếp tục cùng nhau trải qua những ngày thật bận rộn nhưng cũng thật vui, cùng tạo ra những sản phẩm thật chất lượng và có thêm nhiều câu chuyện để sau này nhìn lại vẫn thấy: May mà năm ấy chúng ta đã đồng hành cùng nhau!",
+                author: "dthg s1 tg",
+              },
+            ],
+          },
+          {
+            emailPrefix: "quachminhhiendz",
+            name: "Quách Minh Hiển",
+            cards: [
+              {
+                text: "ngày đàn ông chúc Hiển luôn là chú ong chăm chỉ làm mật cho đời, bền bỉ đến cùng, làm chủ cuộc chơi !! đàn Sâu is cheering for u",
+                author: "hihi",
+              },
+              {
+                text: '"Happy Men’s Day!\nChúc Hiển ngày càng đẹp trai, phong độ, cân đẹp mọi deadline và lúc nào cũng giữ được nụ cười tươi trên môi nhé. Mong mọi dự định của cậu đều suôn sẻ, và chúc cầu thủ chủ lực của tụi mình luôn cháy hết mình với đam mê sân cỏ, giữ vững phong độ đỉnh cao trong giải giao lưu giữa các CLB sắp tới và quan trọng nhất là thi đấu an toàn, tuyệt đối không bị chấn thương nha.\nCảm ơn cậu vì suốt 364 ngày qua đã luôn quan tâm, che chở cho phái nữ nói chung và chị em nhà Sâu nói riêng. Mong ngày hôm nay sẽ là một kỷ niệm thật đáng nhớ với cậu và dù bận rộn thế nào cũng nhớ yêu thương bản thân thật nhiều nhé!\nP/s: Mong tụi mình sẽ có cơ hội nói chuyện với nhau nha ^^"',
+                author: "Chíp",
+              },
+            ],
+          },
+        ],
+      };
+
+      const FALLBACK_SVG_PHOTO =
+        "data:image/svg+xml;utf8," +
+        encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#38bdf8"/>
+              <stop offset="100%" stop-color="#ff7eb6"/>
+            </linearGradient>
+          </defs>
+          <rect width="800" height="600" fill="url(#g)"/>
+          <rect x="40" y="40" width="720" height="520" fill="#ffffff" fill-opacity="0.92" stroke="#172554" stroke-width="10"/>
+          <text x="400" y="250" font-family="sans-serif" font-size="60" font-weight="bold" fill="#172554" text-anchor="middle">HAPPY MEN'S DAY</text>
+          <text x="400" y="340" font-family="sans-serif" font-size="88" font-weight="bold" fill="#db2777" text-anchor="middle">19 / 11</text>
+          <text x="400" y="420" font-family="sans-serif" font-size="26" fill="#0284c7" text-anchor="middle">Đặt ảnh tập thể vào assets/group.jpg</text>
+        </svg>
+      `);
+
+      let activePuzzlePhotoUrl = CONFIG.GROUP_PHOTO;
+
+      const bgMusic = document.getElementById("bgMusic");
+      bgMusic.src = CONFIG.BG_MUSIC;
+      let musicOn = false;
+
+      function syncMusicUI() {
+        document.getElementById("musicIcon").textContent = musicOn
+          ? "🔊"
+          : "🔇";
+        document.getElementById("musicLabel").textContent = musicOn
+          ? "Đang phát"
+          : "Nhạc";
+      }
+
+      function toggleMusic() {
+        if (musicOn) {
+          bgMusic.pause();
+          musicOn = false;
+        } else {
+          bgMusic
+            .play()
+            .then(() => {
+              musicOn = true;
+              syncMusicUI();
+            })
+            .catch(() => {});
+        }
+        syncMusicUI();
+      }
+
+      document.addEventListener(
+        "pointerdown",
+        function startMusicOnce() {
+          if (!musicOn && bgMusic.paused) {
+            bgMusic
+              .play()
+              .then(() => {
+                musicOn = true;
+                syncMusicUI();
+              })
+              .catch(() => {});
+          }
+        },
+        { once: true },
+      );
+      /* ===== BỘ TẠO ÂM THANH PIXEL 8-BIT (KHÔNG CẦN FILE MP3) ===== */
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      let sfxCtx = null;
+
+      function playSfx(type = "click") {
+        try {
+          if (!sfxCtx) sfxCtx = new AudioCtx();
+          if (sfxCtx.state === "suspended") sfxCtx.resume();
+
+          const osc = sfxCtx.createOscillator();
+          const gain = sfxCtx.createGain();
+          osc.connect(gain);
+          gain.connect(sfxCtx.destination);
+
+          const now = sfxCtx.currentTime;
+
+          if (type === "win") {
+            // Âm thanh chiến thắng / xé túi thành công
+            osc.type = "square";
+            osc.frequency.setValueAtTime(523.25, now); // C5
+            osc.frequency.setValueAtTime(659.25, now + 0.08); // E5
+            osc.frequency.setValueAtTime(783.99, now + 0.16); // G5
+            osc.frequency.setValueAtTime(1046.5, now + 0.24); // C6
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+            osc.start(now);
+            osc.stop(now + 0.42);
+          } else if (type === "swap") {
+            // Âm thanh đổi chỗ mảnh ghép / lật thẻ
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(340, now);
+            osc.frequency.exponentialRampToValueAtTime(580, now + 0.07);
+            gain.gain.setValueAtTime(0.09, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+            osc.start(now);
+            osc.stop(now + 0.08);
+          } else {
+            // Âm thanh nhấn nút / chạm màn hình mặc định
+            osc.type = "square";
+            osc.frequency.setValueAtTime(620, now);
+            osc.frequency.exponentialRampToValueAtTime(880, now + 0.045);
+            gain.gain.setValueAtTime(0.06, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.055);
+            osc.start(now);
+            osc.stop(now + 0.055);
+          }
+        } catch (e) {}
+      }
+
+      // Tự động phát tiếng "click" khi nhấn vào bất kỳ nút, thẻ, mảnh ghép hoặc ô lựa chọn nào
+      document.addEventListener("pointerdown", (e) => {
+        if (
+          e.target.closest(
+            "button, .btn, .pixel-pill, .pixel-choice, .tile, .dot-step",
+          )
+        ) {
+          playSfx("click");
+        }
+      });
+      function firePixelConfetti() {
+        if (typeof confetti !== "function") return;
+        const colors = ["#38bdf8", "#ff7eb6", "#facc15", "#0284c7", "#f472b6"];
+        confetti({
+          particleCount: 70,
+          spread: 70,
+          shapes: ["square"],
+          origin: { y: 0.6 },
+          colors,
+        });
+      }
+
+      let tiles = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+      let selectedIdx = null;
+      let dragSrcIdx = null;
+
+      function initPuzzle() {
+        const frame = document.getElementById("puzzleFrame");
+        const warnEl = document.getElementById("imgWarning");
+        const loader = new Image();
+
+        loader.onload = () => {
+          activePuzzlePhotoUrl = CONFIG.GROUP_PHOTO;
+          warnEl.classList.add("hidden");
+          if (loader.naturalWidth && loader.naturalHeight) {
+            frame.style.aspectRatio = `${loader.naturalWidth} / ${loader.naturalHeight}`;
+          }
+          document.getElementById("previewOverlay").style.backgroundImage =
+            `url("${activePuzzlePhotoUrl}")`;
+          renderPuzzle();
+        };
+
+        loader.onerror = () => {
+          activePuzzlePhotoUrl = FALLBACK_SVG_PHOTO;
+          frame.style.aspectRatio = "4 / 3";
+          warnEl.innerHTML = `⚠️ Không tìm thấy ảnh tại <strong>${CONFIG.GROUP_PHOTO}</strong>. Hãy kiểm tra lại tên thư mục <code>assets</code>, tên file và đuôi <code>.jpg/.png</code> (đang dùng ảnh mẫu tạm).`;
+          warnEl.classList.remove("hidden");
+          document.getElementById("previewOverlay").style.backgroundImage =
+            `url("${activePuzzlePhotoUrl}")`;
+          renderPuzzle();
+        };
+
+        loader.src = CONFIG.GROUP_PHOTO;
+        shufflePuzzle();
+      }
+
+      function shufflePuzzle() {
+        do {
+          for (let i = tiles.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
+          }
+        } while (isPuzzleSolved());
+        selectedIdx = null;
+        renderPuzzle();
+      }
+
+      function isPuzzleSolved() {
+        return tiles.every((val, idx) => val === idx);
+      }
+
+      function renderPuzzle() {
+        const grid = document.getElementById("puzzleGrid");
+        const solved = isPuzzleSolved();
+        grid.innerHTML = "";
+        grid.classList.toggle("solved", solved);
+
+        tiles.forEach((pieceId, pos) => {
+          const div = document.createElement("div");
+          div.className = "tile";
+          if (pieceId === pos) div.classList.add("correct-slot");
+          if (selectedIdx === pos) div.classList.add("selected");
+
+          const r = Math.floor(pieceId / 3);
+          const c = pieceId % 3;
+          div.style.backgroundImage = `url("${activePuzzlePhotoUrl}")`;
+          div.style.backgroundPosition = `${c * 50}% ${r * 50}%`;
+
+          div.draggable = true;
+          div.ondragstart = () => {
+            dragSrcIdx = pos;
+          };
+          div.ondragover = (e) => e.preventDefault();
+          div.ondrop = () => {
+            if (dragSrcIdx !== null && dragSrcIdx !== pos)
+              swapTiles(dragSrcIdx, pos);
+            dragSrcIdx = null;
+          };
+
+          div.onclick = () => {
+            if (selectedIdx === null) {
+              selectedIdx = pos;
+              renderPuzzle();
+            } else if (selectedIdx === pos) {
+              selectedIdx = null;
+              renderPuzzle();
+            } else {
+              swapTiles(selectedIdx, pos);
+              selectedIdx = null;
+            }
+          };
+
+          grid.appendChild(div);
+        });
+      }
+
+      function swapTiles(a, b) {
+        [tiles[a], tiles[b]] = [tiles[b], tiles[a]];
+        renderPuzzle();
+        if (isPuzzleSolved()) {
+          firePixelConfetti();
+          playSfx("win");
+          setTimeout(() => {
+            hideAllSteps();
+            document.getElementById("stepChoices").classList.remove("hidden");
+            document.getElementById("arenaTitle").textContent =
+              "CHIẾN THẮNG! HAPPY 19/11 🏆";
+            document.getElementById("arenaSub").textContent =
+              "Đội hình đã vào vị trí! Chọn xem video hoặc mở gói lời nhắn riêng của bạn:";
+            document.getElementById("mascotBubble").textContent =
+              "Xuất sắc! Chọn phần thưởng bên dưới nào!";
+          }, 550);
+        }
+      }
+
+      function peekOriginal(show) {
+        document
+          .getElementById("previewOverlay")
+          .classList.toggle("show", show);
+      }
+
+      function hideAllSteps() {
+        [
+          "stepPuzzle",
+          "stepChoices",
+          "stepVideo",
+          "stepVerify",
+          "stepPackAndCard",
+        ].forEach((id) => {
+          document.getElementById(id).classList.add("hidden");
+        });
+      }
+
+      function backToPuzzleGame() {
+        document.getElementById("videoMount").innerHTML = "";
+        if (musicOn && bgMusic.paused) bgMusic.play().catch(() => {});
+        hideAllSteps();
+        document.getElementById("stepPuzzle").classList.remove("hidden");
+        document.getElementById("arenaTitle").textContent = "MẢNH GHÉP SODITEC";
+        document.getElementById("arenaSub").textContent =
+          "Hoàn thành bức ảnh tập thể bên dưới để mở khóa video và gói thẻ!";
+        document.getElementById("mascotBubble").textContent =
+          "Cùng ghép lại bức ảnh đội hình nào!";
+        shufflePuzzle();
+      }
+
+      function showVideoView() {
+        hideAllSteps();
+        document.getElementById("stepVideo").classList.remove("hidden");
+        document.getElementById("mascotBubble").textContent =
+          "Thưởng thức video chúc mừng 19/11 nhé!";
+        const mount = document.getElementById("videoMount");
+        if (musicOn) bgMusic.pause();
+
+        if (CONFIG.VIDEO.type === "youtube") {
+          mount.innerHTML = `<iframe src="https://www.youtube.com/embed/${CONFIG.VIDEO.src}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+        } else {
+          mount.innerHTML = `<video src="${CONFIG.VIDEO.src}" controls autoplay playsinline></video>`;
+        }
+      }
+
+      function showVerifyView() {
+        hideAllSteps();
+        document.getElementById("stepVerify").classList.remove("hidden");
+        document.getElementById("verifyError").classList.add("hidden");
+        document.getElementById("mascotBubble").textContent =
+          "Nhập phần mail trước dấu @ để nhận thư nhé!";
+        document.getElementById("prefixInput").focus();
+      }
+
+      function returnToChoices() {
+        document.getElementById("videoMount").innerHTML = "";
+        hideAllSteps();
+        document.getElementById("stepChoices").classList.remove("hidden");
+        document.getElementById("mascotBubble").textContent =
+          "Bạn muốn xem video hay mở gói thẻ lời nhắn?";
+        if (musicOn) bgMusic.play().catch(() => {});
+      }
+
+      function normalizePrefix(val) {
+        return val.trim().toLowerCase().replace(/@.*$/, "");
+      }
+
+      let currentMember = null;
+
+      function verifyRecipient() {
+        const prefix = normalizePrefix(
+          document.getElementById("prefixInput").value,
+        );
+        const errEl = document.getElementById("verifyError");
+
+        if (!prefix) {
+          errEl.textContent = "Vui lòng nhập phần mail trước kí tự @ của bạn.";
+          errEl.classList.remove("hidden");
+          return;
+        }
+
+        const found = CONFIG.LETTERS.find(
+          (item) =>
+            item.emailPrefix && normalizePrefix(item.emailPrefix) === prefix,
+        );
+
+        if (!found) {
+          errEl.textContent = `Không tìm thấy lời nhắn cho "${prefix}@...". Hãy kiểm tra lại chính xác phần tên trước dấu @ nhé!`;
+          errEl.classList.remove("hidden");
+          return;
+        }
+
+        errEl.classList.add("hidden");
+        currentMember = found;
+        preparePixelPack(currentMember);
+      }
+
+      const tearZone = document.getElementById("tearZone");
+      const tearFill = document.getElementById("tearFill");
+      let isTearing = false;
+      let tearStartX = 0;
+      let packOpened = false;
+
+      function preparePixelPack(member) {
+        hideAllSteps();
+        packOpened = false;
+        tearFill.style.width = "0%";
+        document.getElementById("pixelPack").classList.remove("pack-burst");
+        document.getElementById("packRecipientName").textContent = member.name;
+        document.getElementById("packCardCountBadge").textContent =
+          `PACK ${member.cards.length} THẺ • 19/11`;
+        document.getElementById("packWrapper").classList.remove("hidden");
+        document.getElementById("cardsDeckWrapper").classList.add("hidden");
+        document.getElementById("stepPackAndCard").classList.remove("hidden");
+        document.getElementById("arenaTitle").textContent =
+          "GÓI LỜI NHẮN ĐÃ SẴN SÀNG";
+        document.getElementById("arenaSub").textContent =
+          "Kéo ngang đường kẻ vàng trên miệng túi để mở lời chúc!";
+        document.getElementById("mascotBubble").textContent =
+          `Có ${member.cards.length} lời nhắn đang chờ ${member.name}!`;
+      }
+
+      tearZone.addEventListener("pointerdown", (e) => {
+        if (packOpened) return;
+        isTearing = true;
+        tearStartX = e.clientX;
+        tearZone.setPointerCapture(e.pointerId);
+      });
+
+      tearZone.addEventListener("pointermove", (e) => {
+        if (!isTearing || packOpened) return;
+        const rect = tearZone.getBoundingClientRect();
+        const progress = Math.max(
+          0,
+          Math.min(1, (e.clientX - rect.left) / rect.width),
+        );
+        tearFill.style.width = `${(progress * 100).toFixed(1)}%`;
+        if (progress >= 0.7) completePackTear();
+      });
+
+      tearZone.addEventListener("pointerup", (e) => {
+        if (!isTearing || packOpened) return;
+        isTearing = false;
+        if (Math.abs(e.clientX - tearStartX) > 85) {
+          completePackTear();
+        } else {
+          tearFill.style.width = "0%";
+        }
+      });
+
+      function completePackTear() {
+        if (packOpened) return;
+        packOpened = true;
+        isTearing = false;
+        tearFill.style.width = "100%";
+        document.getElementById("pixelPack").classList.add("pack-burst");
+        firePixelConfetti();
+        playSfx("win");
+
+        setTimeout(() => {
+          document.getElementById("packWrapper").classList.add("hidden");
+          currentCardIndex = 0;
+          renderActiveCard();
+          document
+            .getElementById("cardsDeckWrapper")
+            .classList.remove("hidden");
+          document.getElementById("arenaTitle").textContent =
+            `GỬI ${currentMember.name.toUpperCase()}`;
+          document.getElementById("arenaSub").textContent =
+            currentMember.cards.length > 1
+              ? "Vuốt ngang hoặc bấm nút để đọc lần lượt các lời nhắn!"
+              : "Lời nhắn dành riêng cho bạn nhân dịp 19/11:";
+          document.getElementById("mascotBubble").textContent =
+            "Chúc bạn một ngày 19/11 thật ý nghĩa!";
+        }, 420);
+      }
+
+      let currentCardIndex = 0;
+
+      function renderActiveCard() {
+        const cards = currentMember.cards;
+        const total = cards.length;
+        const current = cards[currentCardIndex];
+
+        document.getElementById("cardCountTag").textContent =
+          `THẺ ${currentCardIndex + 1} / ${total}`;
+        document.getElementById("cardMessageText").textContent = current.text;
+
+        const signEl = document.getElementById("cardAuthorSign");
+        if (current.author && current.author.trim() !== "") {
+          signEl.textContent = `— ${current.author.trim()}`;
+          signEl.classList.remove("hidden");
+        } else {
+          signEl.textContent = "— Hội Chị Em SoDiTEC ❤️";
+          signEl.classList.remove("hidden");
+        }
+
+        const indicator = document.getElementById("deckIndicator");
+        indicator.innerHTML = "";
+        for (let i = 0; i < total; i++) {
+          const dot = document.createElement("span");
+          dot.className =
+            "dot-step" + (i === currentCardIndex ? " active" : "");
+          dot.onclick = () => {
+            currentCardIndex = i;
+            renderActiveCard();
+          };
+          indicator.appendChild(dot);
+        }
+
+        const remaining = total - 1 - currentCardIndex;
+        document.getElementById("stackShadow1").style.display =
+          remaining >= 1 ? "block" : "none";
+        document.getElementById("stackShadow2").style.display =
+          remaining >= 2 ? "block" : "none";
+
+        const prevBtn = document.getElementById("prevCardBtn");
+        const nextBtn = document.getElementById("nextCardBtn");
+        const hintEl = document.getElementById("cardSwipeHint");
+
+        if (total <= 1) {
+          prevBtn.classList.add("hidden");
+          nextBtn.classList.add("hidden");
+          hintEl.textContent = "★ Chúc mừng Ngày Quốc tế Nam giới 19/11 ★";
+        } else {
+          prevBtn.classList.remove("hidden");
+          nextBtn.classList.remove("hidden");
+          prevBtn.disabled = currentCardIndex === 0;
+          prevBtn.style.opacity = currentCardIndex === 0 ? "0.45" : "1";
+          nextBtn.textContent =
+            currentCardIndex === total - 1 ? "Về thẻ 1 ↺" : "Thẻ tiếp ▶";
+          hintEl.textContent =
+            "◀ Vuốt ngang hoặc bấm nút để xem thẻ tiếp theo ▶";
+        }
+      }
+
+      function changeCard(step) {
+        const total = currentMember.cards.length;
+        if (total <= 1) return;
+        const shell = document.getElementById("activeCardShell");
+        playSfx("swap");
+
+        if (step === 1 && currentCardIndex === total - 1) {
+          currentCardIndex = 0;
+        } else {
+          const nextIdx = currentCardIndex + step;
+          if (nextIdx < 0 || nextIdx >= total) return;
+          currentCardIndex = nextIdx;
+        }
+
+        shell.style.transform = `translateX(${step > 0 ? "-18px" : "18px"}) rotate(${step > 0 ? "-3deg" : "3deg"})`;
+        shell.style.opacity = "0.6";
+        setTimeout(() => {
+          renderActiveCard();
+          shell.style.transform = "";
+          shell.style.opacity = "1";
+        }, 150);
+      }
+
+      const swipeStage = document.getElementById("swipeStage");
+      let cardTouchStartX = 0;
+
+      swipeStage.addEventListener("pointerdown", (e) => {
+        cardTouchStartX = e.clientX;
+      });
+
+      swipeStage.addEventListener("pointerup", (e) => {
+        const diffX = e.clientX - cardTouchStartX;
+        if (Math.abs(diffX) > 45) {
+          e.stopPropagation();
+          if (diffX < 0) changeCard(1);
+          else changeCard(-1);
+        }
+      });
+
+      function resetToVerify() {
+        document.getElementById("prefixInput").value = "";
+        showVerifyView();
+        document.getElementById("arenaTitle").textContent =
+          "MỞ GÓI THẺ LỜI NHẮN";
+        document.getElementById("arenaSub").textContent =
+          "Nhập phần mail trước kí tự @ để bóc 'sít rịt':";
+      }
+
+      initPuzzle();
+    </script>
+  </body>
+</html>
